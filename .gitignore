@@ -1,0 +1,34 @@
+# macOS
+.DS_Store
+
+# Python virtual environments
+.venv/
+venv/
+
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Packaging artifacts
+*.egg-info/
+.eggs/
+build/
+dist/
+pip-wheel-metadata/
+
+# semx generated output
+.semx/
+
+# Local tool caches
+.coverage
+htmlcov/
+
+# Editors
+.idea/
+.vscode/
+
+# Project-specific
+Proj-notes/

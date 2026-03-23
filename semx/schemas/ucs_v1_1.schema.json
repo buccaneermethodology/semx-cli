@@ -1,0 +1,960 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://semx.dev/schemas/ucs_v1_1.schema.json",
+  "title": "Unified Capability Schema v1.1",
+  "description": "Unified machine-readable schema for semx, covering M1, Mc, Flow, DRP, alignments, validation, evidence, purity, diagnostics, and lint-ready semantics.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "metadata",
+    "m1_records",
+    "mc_records",
+    "flow_records",
+    "drp_records",
+    "alignments"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "ucs_v1.1"
+    },
+    "metadata": {
+      "$ref": "#/$defs/metadata"
+    },
+    "m1_records": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/m1_record"
+      }
+    },
+    "mc_records": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/mc_record"
+      }
+    },
+    "flow_records": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/flow_record"
+      }
+    },
+    "drp_records": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/drp_record"
+      }
+    },
+    "alignments": {
+      "$ref": "#/$defs/alignments"
+    }
+  },
+  "$defs": {
+    "non_empty_string": {
+      "type": "string",
+      "minLength": 1
+    },
+    "unit_interval": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "type_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "domain_entity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "definition",
+        "normalization_strategy"
+      ],
+      "properties": {
+        "definition": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "normalization_strategy": {
+          "$ref": "#/$defs/non_empty_string"
+        }
+      }
+    },
+    "decision_semantic_step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "step_order",
+        "aspect",
+        "description"
+      ],
+      "properties": {
+        "step_order": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "aspect": {
+          "type": "string",
+          "enum": [
+            "IterationScope",
+            "InputQualification",
+            "InputNormalization",
+            "CoreMatchingLogic",
+            "DecisionThreshold",
+            "FailureOrInsufficiencyHandling",
+            "OutputFormation",
+            "Other"
+          ]
+        },
+        "description": {
+          "$ref": "#/$defs/non_empty_string"
+        }
+      }
+    },
+    "decision_rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rule_id",
+        "condition",
+        "result"
+      ],
+      "properties": {
+        "rule_id": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "condition": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "result": {
+          "$ref": "#/$defs/non_empty_string"
+        }
+      }
+    },
+    "constraint_or_invariant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "category",
+        "statement"
+      ],
+      "properties": {
+        "category": {
+          "type": "string",
+          "enum": [
+            "Semantic",
+            "AuthorityOwnership",
+            "StateSideEffect",
+            "FailureBoundary",
+            "Evolution"
+          ]
+        },
+        "statement": {
+          "$ref": "#/$defs/non_empty_string"
+        }
+      }
+    },
+    "evidence_block": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "methods",
+        "notes"
+      ],
+      "properties": {
+        "methods": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/non_empty_string"
+          }
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/non_empty_string"
+          }
+        },
+        "constants": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/non_empty_string"
+          }
+        },
+        "flows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/non_empty_string"
+          }
+        },
+        "notes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/non_empty_string"
+          }
+        }
+      }
+    },
+    "purity_score_block": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "overall",
+        "intent_purity",
+        "decision_density",
+        "orchestration_leakage",
+        "projection_leakage",
+        "infrastructure_leakage",
+        "rationale"
+      ],
+      "properties": {
+        "overall": {
+          "$ref": "#/$defs/unit_interval"
+        },
+        "intent_purity": {
+          "$ref": "#/$defs/unit_interval"
+        },
+        "decision_density": {
+          "$ref": "#/$defs/unit_interval"
+        },
+        "orchestration_leakage": {
+          "$ref": "#/$defs/unit_interval"
+        },
+        "projection_leakage": {
+          "$ref": "#/$defs/unit_interval"
+        },
+        "infrastructure_leakage": {
+          "$ref": "#/$defs/unit_interval"
+        },
+        "rationale": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/non_empty_string"
+          }
+        }
+      }
+    },
+    "diagnostic_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "severity",
+        "category",
+        "message"
+      ],
+      "properties": {
+        "severity": {
+          "type": "string",
+          "enum": [
+            "info",
+            "warning",
+            "error"
+          ]
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "WeakEvidence",
+            "BoundaryAmbiguity",
+            "PseudoM1Risk",
+            "PseudoFlowRisk",
+            "WeakDRPRisk",
+            "CrossLayerConfusion",
+            "RepairHint",
+            "Other"
+          ]
+        },
+        "message": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "related_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/non_empty_string"
+          }
+        }
+      }
+    },
+    "validation_check_m1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "check_id",
+        "result",
+        "reason"
+      ],
+      "properties": {
+        "check_id": {
+          "type": "string",
+          "enum": [
+            "single_intent_test",
+            "non_parasitic_test",
+            "deletion_test",
+            "reimplementation_test",
+            "user_language_test",
+            "projection_leak_test",
+            "orchestration_leak_test",
+            "infrastructure_leak_test",
+            "decision_density_test",
+            "decision_closure_test"
+          ]
+        },
+        "result": {
+          "type": "string",
+          "enum": [
+            "pass",
+            "warning",
+            "fail"
+          ]
+        },
+        "reason": {
+          "$ref": "#/$defs/non_empty_string"
+        }
+      }
+    },
+    "validation_check_mc": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "check_id",
+        "result",
+        "reason"
+      ],
+      "properties": {
+        "check_id": {
+          "type": "string",
+          "enum": [
+            "single_intent_test",
+            "grounded_in_m1_test",
+            "composition_closure_test",
+            "projection_role_test",
+            "orchestration_validity_test"
+          ]
+        },
+        "result": {
+          "type": "string",
+          "enum": [
+            "pass",
+            "warning",
+            "fail"
+          ]
+        },
+        "reason": {
+          "$ref": "#/$defs/non_empty_string"
+        }
+      }
+    },
+    "validation_check_flow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "check_id",
+        "result",
+        "reason"
+      ],
+      "properties": {
+        "check_id": {
+          "type": "string",
+          "enum": [
+            "mc_grounding_test",
+            "single_start_test",
+            "single_end_test",
+            "implementation_term_leak_test",
+            "goal_coherence_test"
+          ]
+        },
+        "result": {
+          "type": "string",
+          "enum": [
+            "pass",
+            "warning",
+            "fail"
+          ]
+        },
+        "reason": {
+          "$ref": "#/$defs/non_empty_string"
+        }
+      }
+    },
+    "validation_check_drp": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "check_id",
+        "result",
+        "reason"
+      ],
+      "properties": {
+        "check_id": {
+          "type": "string",
+          "enum": [
+            "cross_flow_reusability_test",
+            "implementation_independence_test",
+            "pattern_completeness_test",
+            "domain_reasoning_test"
+          ]
+        },
+        "result": {
+          "type": "string",
+          "enum": [
+            "pass",
+            "warning",
+            "fail"
+          ]
+        },
+        "reason": {
+          "$ref": "#/$defs/non_empty_string"
+        }
+      }
+    },
+    "validation_block_m1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "checks"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "pass",
+            "warning",
+            "fail"
+          ]
+        },
+        "checks": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/validation_check_m1"
+          }
+        }
+      }
+    },
+    "validation_block_mc": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "checks"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "pass",
+            "warning",
+            "fail"
+          ]
+        },
+        "checks": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/validation_check_mc"
+          }
+        }
+      }
+    },
+    "validation_block_flow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "checks"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "pass",
+            "warning",
+            "fail"
+          ]
+        },
+        "checks": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/validation_check_flow"
+          }
+        }
+      }
+    },
+    "validation_block_drp": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "checks"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "pass",
+            "warning",
+            "fail"
+          ]
+        },
+        "checks": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/validation_check_drp"
+          }
+        }
+      }
+    },
+    "composition_step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "step",
+        "ref_type",
+        "ref_id"
+      ],
+      "properties": {
+        "step": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "ref_type": {
+          "type": "string",
+          "enum": [
+            "M1",
+            "ExternalCapability",
+            "Preparation",
+            "Routing",
+            "Batching",
+            "Filtering",
+            "Aggregation",
+            "Projection",
+            "Ordering",
+            "Enrichment",
+            "Other"
+          ]
+        },
+        "ref_id": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "description": {
+          "$ref": "#/$defs/non_empty_string"
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "system_name",
+        "extraction_scope",
+        "source_type",
+        "schema_family",
+        "generated_at_utc"
+      ],
+      "properties": {
+        "system_name": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "extraction_scope": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "source_type": {
+          "type": "string",
+          "enum": [
+            "production_code",
+            "service_module",
+            "repository",
+            "mixed"
+          ]
+        },
+        "schema_family": {
+          "type": "string",
+          "const": "semx"
+        },
+        "generated_at_utc": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "repo_path": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "source_files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/non_empty_string"
+          }
+        },
+        "extractor_name": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "extractor_version": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/non_empty_string"
+          }
+        }
+      }
+    },
+    "m1_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "m_id",
+        "name",
+        "capability_type",
+        "capability_description",
+        "purpose",
+        "input_space",
+        "output_space",
+        "domain_model",
+        "decision_semantics",
+        "decision_function_form",
+        "decision_rules",
+        "invariants",
+        "constraints_or_invariants",
+        "non_goals",
+        "code_trace",
+        "validation",
+        "evidence",
+        "purity_score"
+      ],
+      "properties": {
+        "m_id": {
+          "type": "string",
+          "pattern": "^M-[A-Z0-9\\-]+-V[0-9]+$"
+        },
+        "name": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "capability_type": {
+          "type": "string",
+          "enum": [
+            "Extraction",
+            "Mapping",
+            "Detection",
+            "Comparison",
+            "Transformation",
+            "Measurement",
+            "Decision",
+            "Qualification",
+            "Validation"
+          ]
+        },
+        "capability_description": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "purpose": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "input_space": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/type_ref"
+          }
+        },
+        "output_space": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "$ref": "#/$defs/type_ref"
+          }
+        },
+        "domain_model": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "$ref": "#/$defs/domain_entity"
+          }
+        },
+        "decision_semantics": {
+          "type": "array",
+          "minItems": 3,
+          "items": {
+            "$ref": "#/$defs/decision_semantic_step"
+          }
+        },
+        "decision_function_form": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "decision_rules": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/decision_rule"
+          }
+        },
+        "invariants": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/non_empty_string"
+          }
+        },
+        "constraints_or_invariants": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/constraint_or_invariant"
+          }
+        },
+        "non_goals": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/non_empty_string"
+          }
+        },
+        "code_trace": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/non_empty_string"
+          }
+        },
+        "validation": {
+          "$ref": "#/$defs/validation_block_m1"
+        },
+        "evidence": {
+          "$ref": "#/$defs/evidence_block"
+        },
+        "purity_score": {
+          "$ref": "#/$defs/purity_score_block"
+        },
+        "diagnostics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/diagnostic_record"
+          }
+        }
+      }
+    },
+    "mc_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mc_id",
+        "name",
+        "intent",
+        "input_space",
+        "output_space",
+        "composition",
+        "validation",
+        "evidence"
+      ],
+      "properties": {
+        "mc_id": {
+          "type": "string",
+          "pattern": "^MC-[A-Z0-9\\-]+-V[0-9]+$"
+        },
+        "name": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "intent": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "input_space": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/type_ref"
+          }
+        },
+        "output_space": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "$ref": "#/$defs/type_ref"
+          }
+        },
+        "composition": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/composition_step"
+          }
+        },
+        "validation": {
+          "$ref": "#/$defs/validation_block_mc"
+        },
+        "evidence": {
+          "$ref": "#/$defs/evidence_block"
+        },
+        "purity_score": {
+          "$ref": "#/$defs/purity_score_block"
+        },
+        "diagnostics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/diagnostic_record"
+          }
+        }
+      }
+    },
+    "flow_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "flow_id",
+        "name",
+        "start",
+        "main_steps",
+        "end",
+        "backed_by_mc",
+        "validation",
+        "evidence"
+      ],
+      "properties": {
+        "flow_id": {
+          "type": "string",
+          "pattern": "^FLOW-[A-Z0-9\\-]+$"
+        },
+        "name": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "start": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "main_steps": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/non_empty_string"
+          }
+        },
+        "decision_points": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/non_empty_string"
+          }
+        },
+        "end": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "backed_by_mc": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^MC-[A-Z0-9\\-]+-V[0-9]+$"
+          }
+        },
+        "validation": {
+          "$ref": "#/$defs/validation_block_flow"
+        },
+        "evidence": {
+          "$ref": "#/$defs/evidence_block"
+        },
+        "diagnostics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/diagnostic_record"
+          }
+        }
+      }
+    },
+    "drp_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "drp_id",
+        "name",
+        "pattern",
+        "validation",
+        "evidence"
+      ],
+      "properties": {
+        "drp_id": {
+          "type": "string",
+          "pattern": "^DRP-[A-Z0-9\\-]+$"
+        },
+        "name": {
+          "$ref": "#/$defs/non_empty_string"
+        },
+        "pattern": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/$defs/non_empty_string"
+          }
+        },
+        "validation": {
+          "$ref": "#/$defs/validation_block_drp"
+        },
+        "evidence": {
+          "$ref": "#/$defs/evidence_block"
+        },
+        "diagnostics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/diagnostic_record"
+          }
+        }
+      }
+    },
+    "alignments": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "flow_to_drp",
+        "mc_to_m1"
+      ],
+      "properties": {
+        "flow_to_drp": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "flow_id",
+              "drp_id",
+              "reason"
+            ],
+            "properties": {
+              "flow_id": {
+                "type": "string",
+                "pattern": "^FLOW-[A-Z0-9\\-]+$"
+              },
+              "drp_id": {
+                "type": "string",
+                "pattern": "^DRP-[A-Z0-9\\-]+$"
+              },
+              "reason": {
+                "$ref": "#/$defs/non_empty_string"
+              }
+            }
+          }
+        },
+        "mc_to_m1": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "mc_id",
+              "m_ids"
+            ],
+            "properties": {
+              "mc_id": {
+                "type": "string",
+                "pattern": "^MC-[A-Z0-9\\-]+-V[0-9]+$"
+              },
+              "m_ids": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "pattern": "^M-[A-Z0-9\\-]+-V[0-9]+$"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

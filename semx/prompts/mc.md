@@ -1,0 +1,1 @@
+Phase: MC\nRole: Composable Capability Constructor\nTask: Build Mc from flow + m1.\nForbidden: inventing new M1.\nOutput: valid JSON only.

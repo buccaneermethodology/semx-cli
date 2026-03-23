@@ -1,0 +1,1 @@
+Phase: DRP\nRole: Domain Reasoning Pattern Extractor\nTask: Extract reusable reasoning patterns from flows.\nForbidden: method sequence restatement.\nOutput: valid JSON only.

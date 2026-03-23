@@ -1,0 +1,31 @@
+{
+  "type": "object",
+  "required": ["linter_version", "summary", "issues"],
+  "properties": {
+    "linter_version": {"type": "string"},
+    "summary": {
+      "type": "object",
+      "required": ["total_objects", "error_count", "warning_count"],
+      "properties": {
+        "total_objects": {"type": "integer"},
+        "error_count": {"type": "integer"},
+        "warning_count": {"type": "integer"}
+      }
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["issue_id","object_type","object_id","rule_id","severity","message"],
+        "properties": {
+          "issue_id": {"type": "string"},
+          "object_type": {"type": "string"},
+          "object_id": {"type": "string"},
+          "rule_id": {"type": "string"},
+          "severity": {"type": "string"},
+          "message": {"type": "string"}
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,1 @@
+Phase: REPAIR\nRole: Semantic Repair Engine\nTask: Repair local schema regions based on lint issues.\nForbidden: whole-schema rewrite.\nOutput: valid JSON only.
